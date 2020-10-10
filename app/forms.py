@@ -68,7 +68,3 @@ class PostForm(FlaskForm):
     post = TextAreaField('Say something', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-class JoinTestForm(FlaskForm):
-    option = BooleanField('Join Test')
-    Confirm = SubmitField('Confirm')
-

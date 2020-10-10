@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
-    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm, JoinTestForm
+    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, Post
 from app.email import send_password_reset_email
 import smtplib
@@ -21,18 +21,6 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    form = JoinTestForm()
-    if form.validate_on_submit():
-        if(form.option.data):
-            current_user.activate()
-            flash('You have joined the EmalTest, first Emal will be sent in random time.')
-            sendmail()
-        else:
-            current_user.set_inactive()
-            flash('You have exit the EmalTest.')
-
-        db.session.commit()
-        return redirect(url_for('index'))
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -40,9 +28,23 @@ def index():
         if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('index.html', title='Home', form=form,
+    return render_template('index.html', title='Home',
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
+
+@app.route('/join')
+@login_required
+def joinTest():
+    if(current_user.isActive == 0):
+        current_user.activate()
+        flash('You have joined the EmalTest, first Emal will be sent in random time.')
+        sendmail()
+    else:
+        current_user.set_inactive()
+        flash('You have exit the EmalTest.')
+    db.session.commit()
+
+    return redirect(url_for('index'))
 
 def sendmail():
     gmail_user = 'jiewenguan6@gmail.com'
