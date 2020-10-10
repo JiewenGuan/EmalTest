@@ -1,3 +1,7 @@
 # Welcome to EmalTest!
 
-This is an example application featured in my [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world). See the tutorial for instructions on how to work with it.
+# To Run
+install python and add python to path
+
+$python -m pip install -r requirements.txt
+$python -m flask run
